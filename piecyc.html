@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<body>
+<script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+<script>
+var svg = d3.select("body").append("svg").attr("width",500).attr("height",500);
+
+var d0 = [[0,2,100,20,40,100,30,50,20,90,10,20,20,10,20,20,40,0,10,20,5,10,50,100],
+			[0,2,100,20,40,100,30,50,20,90,10,20,20,10,20,20,40,0,10,20,5,10,50,100]];
+
+var d1 = [[0,2,0,20,40,0,30,50,100,90,100,20,20,10,20,20,40,0,10,20,5,10,50,100],
+			[0,2,100,20,40,100,30,50,20,90,10,20,20,10,20,20,40,0,10,20,5,10,50,100]];
+
+var data = [d0,d1];
+
+var max = 100;
+var th = 2*Math.PI/24;
+var rScale = d3.scaleLinear().domain([0, max]).range([0, 1.0]);
+
+for(c = 0; c < data.length; c++){
+	var gc = svg.append("g").attr("width",1000).attr("height",200).attr("id",function(d){return "c"+c;});
+	var gd = gc.selectAll("g").data(data[c]).enter().append("g").attr("id",function(d,i){return "g"+i;})
+				.attr("width",100).attr("height",100).attr("transform","translate(150,"+(200*c+100)+")");
+	
+	for(d = 0; d < 2; d++){
+		var arcf = d3.arc()
+		.innerRadius(50+10*d)
+		.outerRadius(60+10*d)
+		.startAngle(function(d,i){return i*th;})
+		.endAngle(function(d,i){return (i+1)*th;});
+
+		gc.select("#g"+d).selectAll("path").data(data[c][d]).enter().append("path")
+			.attr("d", arcf)
+			.attr("opacity", function(d){return rScale(+d);})
+			.attr("fill","red");
+	}
+}
+
+</script>
+</body>
+</html>
